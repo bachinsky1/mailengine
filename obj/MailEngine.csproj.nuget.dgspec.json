@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Loopback\\source\\repos\\MailEngine\\MailEngine.csproj": {}
+    "C:\\Users\\Loopback\\source\\1212\\mailengine\\MailEngine.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Loopback\\source\\repos\\MailEngine\\MailEngine.csproj": {
+    "C:\\Users\\Loopback\\source\\1212\\mailengine\\MailEngine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Loopback\\source\\repos\\MailEngine\\MailEngine.csproj",
+        "projectUniqueName": "C:\\Users\\Loopback\\source\\1212\\mailengine\\MailEngine.csproj",
         "projectName": "MailEngine",
-        "projectPath": "C:\\Users\\Loopback\\source\\repos\\MailEngine\\MailEngine.csproj",
+        "projectPath": "C:\\Users\\Loopback\\source\\1212\\mailengine\\MailEngine.csproj",
         "packagesPath": "C:\\Users\\Loopback\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Loopback\\source\\repos\\MailEngine\\obj\\",
+        "outputPath": "C:\\Users\\Loopback\\source\\1212\\mailengine\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Loopback\\AppData\\Roaming\\NuGet\\NuGet.Config",

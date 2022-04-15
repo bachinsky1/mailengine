@@ -87,7 +87,7 @@ namespace MailEngine.Controllers
             else
             {
                 string apiKey = "Your send gri api key";
-                SendGridClient client = new SendGridClient(apiKey);
+                SendGridClient client = new SendGridClient(UserSettings.SendGridKey);
                 SendGridMessage msg = MailHelper.CreateSingleEmail(new EmailAddress(UserSettings.ImapUser), new EmailAddress(to), subject, body, body);
                 Response response = await client.SendEmailAsync(msg);
                 Debug.WriteLine("Sent via SendGrid");
