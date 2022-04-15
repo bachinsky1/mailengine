@@ -12,7 +12,7 @@
 If you want to use your Gmail, firstly need to create virtual device and user password from it https://security.google.com/settings/security/apppasswords as an IMAP/SMTP password.
 Another mail servers, like as outlook.com, uses a regular email password for connection
 
-It can been ran as a remote service in Google cloud or as a local, integrated to Katarina Manager, as a separated application. Or as a Windows Service.
+It should been ran as a remote service in Google cloud or as a local, integrated to Katarina Manager, as a separated application. Or as a Windows Service.
 
 Service use a Mail.dll component https://www.limilabs.com/mail
 
