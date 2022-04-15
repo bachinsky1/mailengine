@@ -1,4 +1,4 @@
-# Mail engine guid line
+# Mail engine guideline
 1. Clone repo to some folder
 2. Open MailEngine.sln in Visual Studio
 3. Set mail credentionals in UserSettings.cs file
