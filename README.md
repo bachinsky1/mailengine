@@ -14,5 +14,5 @@ Another mail servers, like as outlook.com, uses a regular email password for con
 
 It should been ran as a remote service in Google cloud or as a local service, integrated to Katarina Manager, as a separated application. Or as a Windows Service.
 
-Application use a **Mail.dll** component https://www.limilabs.com/mail
+Application use a not free **Mail.dll** component https://www.limilabs.com/mail
 
