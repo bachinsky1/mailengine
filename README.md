@@ -1,8 +1,8 @@
 # Mail engine guid line
 1. Clone repo to folder_for_project
 2. Open MailEngine.sln in Visual Studio
-3. Set mail credentionals in ImapSettings.cs file
-4. Set SendGrid key in MessageController.cs in string 89
+3. Set mail credentionals in UserSettings.cs file
+4. Set SendGrid key in UserSettings.cs file
 5. Run application in IIS Express or in Docker
 6. Look at the port https://localhost:[PORT]/swagger/index.html and change port in index.html in 400 line to port from your started local server
 8. Open index.html and use mail client for directly send mail, or send mail via SendGrid
