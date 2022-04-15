@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <!--  This file has been downloaded from bootdey.com @bootdey on twitter -->
+    <!--  All snippets are MIT license http://bootdey.com/license -->
+    <title>Katarina IMAP client tester</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.materialdesignicons.com/3.7.95/css/materialdesignicons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+    
+    <div class="container">
+        <div class="email-wrapper wrapper">
+            <div class="row align-items-stretch" style="min-height: calc(100vh)">
+                <div class="mail-sidebar d-none d-lg-block col-md-2 pt-3 bg-white" style="min-height: calc(100vh)" id="mail-accounts">
+                    <div class="menu-bar"> 
+                    </div>
+                </div>
+                <div class="mail-list-container col-md-3 pt-4 pb-4 border-right bg-white " style="min-height: calc(100vh)">
+                    <div class="border-bottom pb-4 mb-3 px-3">
+                        <div class="form-group">
+                            <input class="form-control w-100" type="search" placeholder="Search mail"
+                                id="mail-rearch">
+                        </div>
+                    </div>
+                    <div class="mail-folder"></div>
+                </div>
+                <div class="mail-view d-none d-md-block col-md-9 col-lg-7 bg-white"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <style>
+        body {
+            margin-top: 20px;
+            background: #eee;
+            min-height:100%;
+            position: relative; height: 100%
+        }
+        html {
+            min-height:100%;
+        }
+        .container-fluid {
+            min-height:100%;
+            position: relative; height: 100%
+        }
+
+        /* Rounded sliders */
+        /*-------------------------------------------------------------------*/
+        /* === Email === */
+        /* Mail Sidebar */
+        @media (max-width: 769px) {
+            .email-wrapper .mail-sidebar {
+                position: relative;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .email-wrapper .mail-sidebar {
+                position: fixed;
+                z-index: 99;
+                background: #ffffff;
+                width: 45%;
+                min-width: 300px;
+                left: -100%;
+                display: block;
+                transition: 0.4s ease;
+                -webkit-transition: 0.4s ease;
+                -moz-transition: 0.4s ease;
+            }
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar {
+            width: 100%;
+            float: right;
+            height: 100%;
+            min-height: 100%;
+        }
+
+        @media (max-width: 767.98px) {
+            .email-wrapper .mail-sidebar .menu-bar {
+                min-height: 100vh;
+                max-height: 100%;
+                height: auto;
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .menu-items {
+            padding: 0;
+            margin-bottom: 0;
+            height: auto;
+            list-style-type: none;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .menu-items li {
+            padding: 10px 15px;
+            transition: 0.4s;
+            position: relative;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            -webkit-justify-content: space-between;
+            justify-content: space-between;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .menu-items li:hover {
+            background: rgba(240, 244, 249, 0.8);
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .menu-items li a {
+            color: #303a40;
+            font-size: 0.75rem;
+            text-decoration: none;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .menu-items li a i {
+            margin-right: 8px;
+            font-size: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .menu-items li.active {
+            background: #e6e9ed;
+            border-radius: 4px;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .menu-items li.active a {
+            color: #464dee;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .menu-items li.compose:hover {
+            background: transparent;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .online-status {
+            margin-top: 1rem;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .online-status .account {
+            font-size: 0.75rem;
+            color: #464dee;
+            margin-bottom: 0;
+            font-weight: 600;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .online-status .status {
+            height: 10px;
+            width: 10px;
+            border-radius: 100%;
+            display: inline-flex;
+            justify-content: flex-start;
+            transform: translateX(-43px) translateY(2px);
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .online-status .status:after {
+            font-size: 12px;
+            color: #2e383e;
+            margin: -5px 0 0 18px;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .online-status .status.offline {
+            background: #ef5958;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .online-status .status.offline:after {
+            content: "Offline";
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .online-status .status.online {
+            background: #0ddbb9;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .online-status .status.online:after {
+            content: "Online";
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .profile-list {
+            padding: 10px 0;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .profile-list-item {
+            border-bottom: 1px solid #e9e9e9;
+            padding: 6px 0;
+            display: block;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .profile-list-item:last-child {
+            border-bottom: 0;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .profile-list-item a {
+            text-decoration: none;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .profile-list-item a .pro-pic {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            padding: 0;
+            width: 20%;
+            max-width: 40px;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .profile-list-item a .pro-pic img {
+            max-width: 100%;
+            width: 100%;
+            border-radius: 100%;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .profile-list-item a .user {
+            width: 100%;
+            padding: 5px 10px 0 15px;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .profile-list-item a .user .u-name {
+            font-weight: 400;
+            font-size: 0.75rem;
+            line-height: 1;
+            color: #000000;
+        }
+
+        .email-wrapper .mail-sidebar .menu-bar .profile-list-item a .user .u-designation {
+            font-size: calc(0.75rem - 0.1rem);
+            margin-bottom: 0;
+        }
+
+        .email-wrapper .sidebar.open {
+            left: 0;
+        }
+
+        /* Mail List Container */
+        .email-wrapper .mail-list-container {
+            border-left: 1px solid #e9e9e9;
+            height: 100%;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .email-wrapper .mail-list-container a {
+            text-decoration: none;
+        }
+
+        .email-wrapper .mail-list-container .mail-list {
+            border-bottom: 1px solid #e9e9e9;
+            display: flex;
+            flex-direction: row;
+            padding: 10px 15px;
+            width: 100%;
+        }
+
+        .email-wrapper .mail-list-container .mail-list:last-child {
+            border-bottom: none;
+        }
+
+        .email-wrapper .mail-list-container .mail-list .form-check {
+            margin-top: 12px;
+            width: 11%;
+            min-width: 20px;
+        }
+
+        .email-wrapper .mail-list-container .mail-list .content {
+            width: 83%;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .email-wrapper .mail-list-container .mail-list .content .sender-name {
+            font-size: 0.75rem;
+            font-weight: 400;
+            max-width: 95%;
+        }
+
+        .email-wrapper .mail-list-container .mail-list .content .message_text {
+            margin: 0;
+            max-width: 93%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .email-wrapper .mail-list-container .mail-list .details {
+            width: 5.5%;
+        }
+
+        .email-wrapper .mail-list-container .mail-list .details .date {
+            text-align: right;
+            margin: auto 15px auto 0;
+            white-space: nowrap;
+        }
+
+        .email-wrapper .mail-list-container .mail-list .details i {
+            margin: auto 0;
+            color: #ddd;
+        }
+
+        .email-wrapper .mail-list-container .mail-list .details i.favorite {
+            color: #fcd539;
+        }
+
+        .email-wrapper .mail-list-container .mail-list.new_mail {
+            background: #e6e9ed;
+        }
+
+        .email-wrapper .mail-list-container .mail-list.new_mail .details .date {
+            color: #000000;
+        }
+
+        /* Message Content */
+        .email-wrapper .message-body .sender-details {
+            padding: 20px 15px 0;
+            border-bottom: 1px solid #e9e9e9;
+            display: -webkit-flex;
+            display: flex;
+        }
+
+        .email-wrapper .message-body .sender-details .details {
+            padding-bottom: 0;
+        }
+
+        .email-wrapper .message-body .sender-details .details .msg-subject {
+            font-weight: 600;
+        }
+
+        .email-wrapper .message-body .sender-details .details .sender-email {
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .email-wrapper .message-body .sender-details .details .sender-email i {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0 1px 0 7px;
+        }
+
+        .email-wrapper .message-body .message-content {
+            padding: 50px 15px;
+        }
+
+        .email-wrapper .message-body .attachments-sections ul {
+            list-style: none;
+            border-top: 1px solid #e9e9e9;
+            padding: 30px 15px 20px;
+        }
+
+        .email-wrapper .message-body .attachments-sections ul li {
+            padding: 10px;
+            margin-right: 20px;
+            border: 1px solid #e9e9e9;
+            border-radius: 5px;
+        }
+
+        .email-wrapper .message-body .attachments-sections ul li .thumb {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .email-wrapper .message-body .attachments-sections ul li .thumb i {
+            font-size: 30px;
+            margin: 0;
+            color: #2e383e;
+        }
+
+        .email-wrapper .message-body .attachments-sections ul li .details p.file-name {
+            display: block;
+            margin-bottom: 0;
+            color: #2e383e;
+        }
+
+        .email-wrapper .message-body .attachments-sections ul li .details .buttons .file-size {
+            margin-right: 10px;
+            margin-bottom: 0;
+            font-size: 13px;
+        }
+
+        .email-wrapper .message-body .attachments-sections ul li .details .buttons a {
+            font-size: 13px;
+            margin-right: 10px;
+        }
+
+        .email-wrapper .message-body .attachments-sections ul li .details .buttons a:last-child {
+            margin-right: 0;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+    <script>
+
+$(function() {
+    const url = 'https://localhost:44309'
+    // const url = 'https://localhost:55926' // docker
+    let shift = 0
+    let currentFolder = ''
+
+    
+    $.get( `${url}/account`, accounts => {
+        let c = 0
+        for(let account of accounts) {
+            $('.menu-bar').prepend(
+            `<div class="online-status d-flex justify-content-between align-items-center" data-id="${account}">
+                <p class="account">${account}</p>  
+            </div>`)
+            $('.menu-bar').append(`<ul class="menu-items" data-account="${account}" id="${account}"></ul>`)
+            $.get( `${url}/folder`, folders => {
+                $(`.menu-items`).append(`<li class="compose mb-3"><button class="btn btn-primary btn-block create-new">Create new</button></li>`)
+                for (let folder of folders) {
+                    $(`.menu-items`).append(`
+                        <li class="mail-folder-${c}" data-id="${folder.shortName}">
+                            <a href="#"><i class="mdi mdi-email-outline"></i> ${folder.shortName}</a>
+                        </li>`)
+                }
+                $(`.mail-folder-${c}`).on('click', e => { 
+                    shift = 0
+                    currentFolder = $(e.currentTarget).data('id')
+                    console.log(currentFolder)
+                    getFolder(currentFolder, shift) 
+                })
+                $('.create-new').on('click', e => {
+                    $('.mail-view').empty().append(`
+                    <div style="margin-top:20px">
+                        <p class="text-center">New Message</p>
+                            <div class="form-row mb-3"> <label for="to" class="col-2 col-sm-1 col-form-label mail-to">To:</label>
+                                <div class="col-10 col-sm-11"> 
+                                    <input type="email" class="form-control" id="mail-to" placeholder="Type email" value="bachinsky1@gmail.com">
+                                </div>
+                            </div>
+                            <!--
+                            <div class="form-row mb-3"> <label for="cc" class="col-2 col-sm-1 col-form-label mail-cc">CC:</label>
+                                <div class="col-10 col-sm-11"> <input type="email" class="form-control" id="cc" placeholder="Type email">
+                                </div>
+                            </div>
+                            <div class="form-row mb-3"> <label for="bcc" class="col-2 col-sm-1 col-form-label mail-bcc">BCC:</label>
+                                <div class="col-10 col-sm-11"> <input type="email" class="form-control" id="bcc" placeholder="Type email">
+                                </div>
+                            </div> 
+                            -->
+                            <div class="form-row mb-4"> <label for="bcc" class="col-2 col-sm-2 col-form-label mail-subject">Subject:</label>
+                                <div class="col-10 col-sm-10"> 
+                                    <input type="email" class="form-control" id="mail-subject" placeholder="Type subject" value="Subject of mail">
+                                </div>
+                            </div> 
+                        <div class="row">
+                            <div class="col-sm-11 ml-auto">
+                                <div class="form-group mt-4"><textarea class="form-control" id="mail-body" name="body" rows="12"
+                                        placeholder="Type body"></textarea></div>
+                                <div class="form-group"> 
+                                    <button type="submit" class="btn btn-success btn-send">Send</button> 
+                                    <label class="form-check-label" style="text-align: right;">  Use <strong>SendGrid</strong> service for send:  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="checkbox" class="form-check-input" id="use-gateway"><i class="input-helper"></i>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    `) 
+
+                    $('.btn-send').on('click', e => {
+                        let to = $('#mail-to').val().trim()
+                        let subject = $('#mail-subject').val().trim()
+                        let body = $('#mail-body').val().trim()
+                        let useGateway = $('#use-gateway').is(':checked') ? 1 : 0
+                        console.log(1111, useGateway)
+                        $.post( `${url}/message/send`, { to, subject, body, useGateway }, data => {
+                            console.log(data)
+                        });
+
+                        console.log(to, subject, body)
+                    })
+                })
+            })
+            c++
+        }
+        
+        function getMail(uid) {
+            $('.mail-view').empty()
+            $.get( `${url}/message/${currentFolder}/${uid}`, mail => {
+                console.log(mail)
+                let attachments = ''
+                if(mail.attachments.$values.length > 0) {
+                    attachments += `<div class="attachments-sections">
+                                <ul>`
+                    for(let attachment of mail.attachments.$values) {
+                        if (attachment.size == undefined) continue;
+                        console.log(1,attachment)
+                        attachments += `
+                            <li>
+                                <div class="thumb"><i class="mdi mdi-file-image"></i></div>
+                                <div class="details">
+                                    <p class="file-name" >${attachment.safeFileName}</p>
+                                    <div class="buttons">
+                                        <p class="file-size">${attachment.size}B</p> 
+                                        <a href="#" 
+                                            class="download main-app-mail-attachment" 
+                                            data-message_uid="${mail.uid}"
+                                            data-file_name="${attachment.safeFileName}"
+                                            data-attachment_uid="${attachment.contentId}">Download
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        `
+                    }
+                    attachments += `</ul>
+                            </div>`
+                }
+                $('.mail-view').append(`
+                    <div class="row">
+                        <div class="col-md-12 mb-4 mt-4">
+                            <div class="btn-toolbar">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"><i
+                                            class="mdi mdi-reply text-primary mr-1"></i> Reply</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"><i
+                                            class="mdi mdi-reply-all text-primary mr-1"></i>Reply All</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"><i
+                                            class="mdi mdi-share text-primary mr-1"></i>Forward</button>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"><i
+                                            class="mdi mdi-attachment text-primary mr-1"></i>Attach</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"><i
+                                            class="mdi mdi-delete text-primary mr-1"></i>Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message-body">
+                        <div class="sender-details">
+                            <img class="img-sm rounded-circle mr-3"
+                                src="http://www.urbanui.com/dashflat/template/images/faces/face11.jpg" alt="">
+                            <div class="details">
+                                <p class="msg-subject">
+                                    ${mail.subject}
+                                </p>
+                                <p class="sender-email">
+                                    ${mail.from}
+                                    Sarah Graves
+                                    <a href="#">itsmesarah268@gmail.com</a>
+                                    &nbsp;<i class="mdi mdi-account-multiple-plus"></i>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="message-content">
+                            ${mail.html}
+                        </div>
+                        ${attachments}
+                    </div>
+                `)
+
+                $(`.main-app-mail-attachment`).on('click', e => {
+                    let message_uid = $(e.currentTarget).data('message_uid') 
+                    let file_name = $(e.currentTarget).data('file_name')
+                    console.log(currentFolder, message_uid, file_name)
+                    getAttachment({currentFolder, message_uid, file_name})
+                })
+            });
+        }
+
+        function getAttachment({currentFolder, message_uid, file_name}) {
+            let req = new XMLHttpRequest();
+            req.open("GET", `${url}/message/${currentFolder}/${message_uid}/${file_name}`, true);
+            req.responseType = "blob";
+            req.onload = () => {
+                let blob = req.response;
+                let link=document.createElement('a');
+                link.href=window.URL.createObjectURL(blob);
+                link.download=file_name;
+                link.click();
+            };
+
+            req.send();
+        }
+     
+
+        function getFolder(folder, shift = 0) {
+            $('.mail-folder').empty()
+            $('.mail-view').empty()
+            $.get( `${url}/folder/${folder}/${shift}`, mails => {
+                $('.mail-folder').append(`
+                <div class="btn-group" style="width:100%"> 
+                    <a href="#" class="btn btn-sm btn-outline-secondary previous-page"> < </a> 
+                    <a href="#" class="btn btn-sm btn-outline-secondary next-page"> > </a>
+                </div>
+                `)
+
+                if(mails.length == 0) {
+                    $('.mail-folder').append(`<h3>No mails</h3>`)
+                    return
+                }
+
+                for(let mail of mails) {
+                    let arr = mail.from.split('=')
+                    $('.mail-folder').append(`
+                        <div class="mail-list">
+                            <div class="form-check"> 
+                                <label class="form-check-label"> 
+                                    <input type="checkbox" class="form-check-input"> <i class="input-helper"></i>
+                                </label>
+                            </div>
+                            <div class="content" title="${arr[2]}">
+                                <p class="sender-name">${arr[1].replace(' Address', '')}</p>
+                                <p class="message_text message_text-${mail.uid}" data-id=${mail.uid} style="cursor:pointer">${mail.subject}</p>
+                            </div>
+                            <div class="details">
+                                <i class="mdi mdi-star-outline"></i>
+                            </div>
+                        </div>
+                    `)
+                    $(`.message_text-${mail.uid}`).on('click', e => { 
+                        let uid = $(e.currentTarget).data('id')
+                        getMail(uid) 
+                    })
+
+                    $('.previous-page').on('click', e => {
+                        shift -= 10;
+                        getFolder(currentFolder, shift)
+                    })
+
+                    $('.next-page').on('click', e => {
+                        shift += 10
+                        getFolder(currentFolder, shift)
+                    })
+                    
+                    // console.log(arr, mail)
+                }
+                
+                
+            });
+        }
+ 
+    })
+
+})
+    </script>
+</body>
+
+</html>
