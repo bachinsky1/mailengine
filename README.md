@@ -1,5 +1,5 @@
 # Mail engine guid line
-1. Clone repo to folder_for_project
+1. Clone repo to some folder
 2. Open MailEngine.sln in Visual Studio
 3. Set mail credentionals in UserSettings.cs file
 4. Set SendGrid key in UserSettings.cs file
