@@ -14,19 +14,23 @@
 </head>
 
 <body>
-    
+
     <div class="container">
         <div class="email-wrapper wrapper">
             <div class="row align-items-stretch" style="min-height: calc(100vh)">
-                <div class="mail-sidebar d-none d-lg-block col-md-2 pt-3 bg-white" style="min-height: calc(100vh)" id="mail-accounts">
-                    <div class="menu-bar"> 
-                    </div>
+                <div class="mail-sidebar d-none d-lg-block col-md-2 pt-3 bg-white" style="min-height: calc(100vh)"
+                    id="mail-accounts">
+                    <div class="menu-bar"></div>
                 </div>
-                <div class="mail-list-container col-md-3 pt-4 pb-4 border-right bg-white " style="min-height: calc(100vh)">
+                <div class="mail-list-container col-md-3 pt-4 pb-4 border-right bg-white "
+                    style="min-height: calc(100vh)">
                     <div class="border-bottom pb-4 mb-3 px-3">
                         <div class="form-group">
-                            <input class="form-control w-100" type="search" placeholder="Search mail"
-                                id="mail-rearch">
+                            <input class="form-control w-100" 
+                                type="search" 
+                                placeholder="Type substring and press ENTER"
+                                id="mail-search"
+                                disabled>
                         </div>
                     </div>
                     <div class="mail-folder"></div>
@@ -41,15 +45,19 @@
         body {
             margin-top: 20px;
             background: #eee;
-            min-height:100%;
-            position: relative; height: 100%
+            min-height: 100%;
+            position: relative;
+            height: 100%
         }
+
         html {
-            min-height:100%;
+            min-height: 100%;
         }
+
         .container-fluid {
-            min-height:100%;
-            position: relative; height: 100%
+            min-height: 100%;
+            position: relative;
+            height: 100%
         }
 
         /* Rounded sliders */
@@ -396,103 +404,110 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
     <script>
 
-$(function() {
-    const url = 'https://localhost:44309'
-    // const url = 'https://localhost:55926' // docker
-    let shift = 0
-    let currentFolder = ''
+        $(function () {
+            const url = 'https://localhost:44309' 
 
-    
-    $.get( `${url}/account`, accounts => {
-        let c = 0
-        for(let account of accounts) {
-            $('.menu-bar').prepend(
-            `<div class="online-status d-flex justify-content-between align-items-center" data-id="${account}">
-                <p class="account">${account}</p>  
-            </div>`)
-            $('.menu-bar').append(`<ul class="menu-items" data-account="${account}" id="${account}"></ul>`)
-            $.get( `${url}/folder`, folders => {
-                $(`.menu-items`).append(`<li class="compose mb-3"><button class="btn btn-primary btn-block create-new">Create new</button></li>`)
-                for (let folder of folders) {
-                    $(`.menu-items`).append(`
+            let shift = 0
+            let currentFolder = ''
+
+            $('#mail-search').on('keyup', e => {
+                if (e.keyCode == 13) {
+                    console.log($('#mail-search').val().trim())
+                    getFolder(currentFolder, 0, $('#mail-search').val().trim())
+                }
+            })
+
+            $.get(`${url}/account`, accounts => {
+                let c = 0
+                for (let account of accounts) {
+                    $('.menu-bar').prepend(
+                        `<div class="online-status d-flex justify-content-between align-items-center" data-id="${account}">
+                        <p class="account">${account}</p>  
+                    </div>`)
+                    $('.menu-bar').append(`<ul class="menu-items" data-account="${account}" id="${account}"></ul>`)
+                    $.get(`${url}/folder`, folders => {
+                        $(`.menu-items`).append(`<li class="compose mb-3"><button class="btn btn-primary btn-block create-new">Create new</button></li>`)
+                        for (let folder of folders) {
+                            $(`.menu-items`).append(`
                         <li class="mail-folder-${c}" data-id="${folder.shortName}">
                             <a href="#"><i class="mdi mdi-email-outline"></i> ${folder.shortName}</a>
                         </li>`)
-                }
-                $(`.mail-folder-${c}`).on('click', e => { 
-                    shift = 0
-                    currentFolder = $(e.currentTarget).data('id')
-                    console.log(currentFolder)
-                    getFolder(currentFolder, shift) 
-                })
-                $('.create-new').on('click', e => {
-                    $('.mail-view').empty().append(`
-                    <div style="margin-top:20px">
-                        <p class="text-center">New Message</p>
-                            <div class="form-row mb-3"> <label for="to" class="col-2 col-sm-1 col-form-label mail-to">To:</label>
-                                <div class="col-10 col-sm-11"> 
-                                    <input type="email" class="form-control" id="mail-to" placeholder="Type email" value="bachinsky1@gmail.com">
+                        }
+                        $(`.mail-folder-${c}`).on('click', e => {
+                            shift = 0
+                            currentFolder = $(e.currentTarget).data('id')
+                            console.log(currentFolder)
+                            getFolder(currentFolder, shift)
+                        })
+                        $('.create-new').on('click', e => {
+                            $('.mail-view').empty().append(`
+                            <div style="margin-top:20px">
+                                <p class="text-center">New Message</p>
+                                    <div class="form-row mb-3"> <label for="to" class="col-2 col-sm-1 col-form-label mail-to">To:</label>
+                                        <div class="col-10 col-sm-11"> 
+                                            <input type="email" class="form-control" id="mail-to" placeholder="Type email" value="bachinsky1@gmail.com">
+                                        </div>
+                                    </div>
+                                    <!--
+                                    <div class="form-row mb-3"> <label for="cc" class="col-2 col-sm-1 col-form-label mail-cc">CC:</label>
+                                        <div class="col-10 col-sm-11"> <input type="email" class="form-control" id="cc" placeholder="Type email">
+                                        </div>
+                                    </div>
+                                    <div class="form-row mb-3"> <label for="bcc" class="col-2 col-sm-1 col-form-label mail-bcc">BCC:</label>
+                                        <div class="col-10 col-sm-11"> <input type="email" class="form-control" id="bcc" placeholder="Type email">
+                                        </div>
+                                    </div> 
+                                    -->
+                                    <div class="form-row mb-4"> <label for="bcc" class="col-2 col-sm-2 col-form-label mail-subject">Subject:</label>
+                                        <div class="col-10 col-sm-10"> 
+                                            <input type="email" class="form-control" id="mail-subject" placeholder="Type subject" value="Subject of mail">
+                                        </div>
+                                    </div> 
+                                <div class="row">
+                                    <div class="col-sm-11 ml-auto">
+                                        <div class="form-group mt-4"><textarea class="form-control" id="mail-body" name="body" rows="12"
+                                                placeholder="Type body"></textarea></div>
+                                        <div class="form-group"> 
+                                            <button type="submit" class="btn btn-success btn-send">Send</button> 
+                                            <label class="form-check-label" style="text-align: right;">  Use <strong>SendGrid</strong> service for send:  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <input type="checkbox" class="form-check-input" id="use-gateway"><i class="input-helper"></i>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <!--
-                            <div class="form-row mb-3"> <label for="cc" class="col-2 col-sm-1 col-form-label mail-cc">CC:</label>
-                                <div class="col-10 col-sm-11"> <input type="email" class="form-control" id="cc" placeholder="Type email">
-                                </div>
-                            </div>
-                            <div class="form-row mb-3"> <label for="bcc" class="col-2 col-sm-1 col-form-label mail-bcc">BCC:</label>
-                                <div class="col-10 col-sm-11"> <input type="email" class="form-control" id="bcc" placeholder="Type email">
-                                </div>
-                            </div> 
-                            -->
-                            <div class="form-row mb-4"> <label for="bcc" class="col-2 col-sm-2 col-form-label mail-subject">Subject:</label>
-                                <div class="col-10 col-sm-10"> 
-                                    <input type="email" class="form-control" id="mail-subject" placeholder="Type subject" value="Subject of mail">
-                                </div>
-                            </div> 
-                        <div class="row">
-                            <div class="col-sm-11 ml-auto">
-                                <div class="form-group mt-4"><textarea class="form-control" id="mail-body" name="body" rows="12"
-                                        placeholder="Type body"></textarea></div>
-                                <div class="form-group"> 
-                                    <button type="submit" class="btn btn-success btn-send">Send</button> 
-                                    <label class="form-check-label" style="text-align: right;">  Use <strong>SendGrid</strong> service for send:  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <input type="checkbox" class="form-check-input" id="use-gateway"><i class="input-helper"></i>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    `) 
+                            `)
 
-                    $('.btn-send').on('click', e => {
-                        let to = $('#mail-to').val().trim()
-                        let subject = $('#mail-subject').val().trim()
-                        let body = $('#mail-body').val().trim()
-                        let useGateway = $('#use-gateway').is(':checked') ? 1 : 0
-                        console.log(1111, useGateway)
-                        $.post( `${url}/message/send`, { to, subject, body, useGateway }, data => {
-                            console.log(data)
-                        });
+                            $('.btn-send').on('click', e => {
+                                let to = $('#mail-to').val().trim()
+                                let subject = $('#mail-subject').val().trim()
+                                let body = $('#mail-body').val().trim()
+                                let useGateway = $('#use-gateway').is(':checked') ? 1 : 0
+                                
+                                $.post(`${url}/message/send`, { to, subject, body, useGateway }, data => {
+                                    console.log('Send status :', data)
+                                });
 
-                        console.log(to, subject, body)
+                                console.log(to, subject, body)
+                            })
+                        })
                     })
-                })
+                    c++
+                }
             })
-            c++
-        }
-        
-        function getMail(uid) {
-            $('.mail-view').empty()
-            $.get( `${url}/message/${currentFolder}/${uid}`, mail => {
-                console.log(mail)
-                let attachments = ''
-                if(mail.attachments.$values.length > 0) {
-                    attachments += `<div class="attachments-sections">
+
+            function getMail(uid) {
+                $('.mail-view').empty()
+                $.get(`${url}/message/${currentFolder}/${uid}`, mail => {
+                    console.log(mail)
+                    let attachments = ''
+                    if (mail.attachments.$values.length > 0) {
+                        attachments += `<div class="attachments-sections">
                                 <ul>`
-                    for(let attachment of mail.attachments.$values) {
-                        if (attachment.size == undefined) continue;
-                        console.log(1,attachment)
-                        attachments += `
+                        for (let attachment of mail.attachments.$values) {
+                            if (attachment.size == undefined) continue;
+                            console.log(1, attachment)
+                            attachments += `
                             <li>
                                 <div class="thumb"><i class="mdi mdi-file-image"></i></div>
                                 <div class="details">
@@ -509,11 +524,11 @@ $(function() {
                                 </div>
                             </li>
                         `
-                    }
-                    attachments += `</ul>
+                        }
+                        attachments += `</ul>
                             </div>`
-                }
-                $('.mail-view').append(`
+                    }
+                    $('.mail-view').append(`
                     <div class="row">
                         <div class="col-md-12 mb-4 mt-4">
                             <div class="btn-toolbar">
@@ -558,50 +573,53 @@ $(function() {
                     </div>
                 `)
 
-                $(`.main-app-mail-attachment`).on('click', e => {
-                    let message_uid = $(e.currentTarget).data('message_uid') 
-                    let file_name = $(e.currentTarget).data('file_name')
-                    console.log(currentFolder, message_uid, file_name)
-                    getAttachment({currentFolder, message_uid, file_name})
-                })
-            });
-        }
+                    $(`.main-app-mail-attachment`).on('click', e => {
+                        let message_uid = $(e.currentTarget).data('message_uid')
+                        let file_name = $(e.currentTarget).data('file_name')
+                        console.log(currentFolder, message_uid, file_name)
+                        getAttachment({ currentFolder, message_uid, file_name })
+                    })
+                });
+            }
 
-        function getAttachment({currentFolder, message_uid, file_name}) {
-            let req = new XMLHttpRequest();
-            req.open("GET", `${url}/message/${currentFolder}/${message_uid}/${file_name}`, true);
-            req.responseType = "blob";
-            req.onload = () => {
-                let blob = req.response;
-                let link=document.createElement('a');
-                link.href=window.URL.createObjectURL(blob);
-                link.download=file_name;
-                link.click();
-            };
+            function getAttachment({ currentFolder, message_uid, file_name }) {
+                let req = new XMLHttpRequest();
+                req.open("GET", `${url}/message/${currentFolder}/${message_uid}/${file_name}`, true);
+                req.responseType = "blob";
+                req.onload = () => {
+                    let blob = req.response;
+                    let link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = file_name;
+                    link.click();
+                };
 
-            req.send();
-        }
-     
+                req.send();
+            }
 
-        function getFolder(folder, shift = 0) {
-            $('.mail-folder').empty()
-            $('.mail-view').empty()
-            $.get( `${url}/folder/${folder}/${shift}`, mails => {
-                $('.mail-folder').append(`
+            function getFolder(folder, shift = 0, search = null) {
+                $('#mail-search').removeAttr('disabled')
+                $('.mail-folder').empty()
+                $('.mail-view').empty()
+                let addr = `${url}/folder/${folder}/${shift}`
+                if (!!search) addr = `${url}/message/search/${folder}/${search}/false`
+                
+                $.get(`${addr}`, mails => {
+                    $('.mail-folder').append(`
                 <div class="btn-group" style="width:100%"> 
                     <a href="#" class="btn btn-sm btn-outline-secondary previous-page"> < </a> 
                     <a href="#" class="btn btn-sm btn-outline-secondary next-page"> > </a>
                 </div>
                 `)
 
-                if(mails.length == 0) {
-                    $('.mail-folder').append(`<h3>No mails</h3>`)
-                    return
-                }
+                    if (mails.length == 0) {
+                        $('.mail-folder').append(`<h3>No mails</h3>`)
+                        return
+                    }
 
-                for(let mail of mails) {
-                    let arr = mail.from.split('=')
-                    $('.mail-folder').append(`
+                    for (let mail of mails) {
+                        let arr = mail.from.split('=')
+                        $('.mail-folder').append(`
                         <div class="mail-list">
                             <div class="form-check"> 
                                 <label class="form-check-label"> 
@@ -617,31 +635,30 @@ $(function() {
                             </div>
                         </div>
                     `)
-                    $(`.message_text-${mail.uid}`).on('click', e => { 
-                        let uid = $(e.currentTarget).data('id')
-                        getMail(uid) 
-                    })
+                        $(`.message_text-${mail.uid}`).on('click', e => {
+                            let uid = $(e.currentTarget).data('id')
+                            getMail(uid)
+                        })
 
-                    $('.previous-page').on('click', e => {
-                        shift -= 10;
-                        getFolder(currentFolder, shift)
-                    })
+                        $('.previous-page').on('click', e => {
+                            shift -= 10;
+                            getFolder(currentFolder, shift)
+                        })
 
-                    $('.next-page').on('click', e => {
-                        shift += 10
-                        getFolder(currentFolder, shift)
-                    })
-                    
-                    // console.log(arr, mail)
-                }
-                
-                
-            });
-        }
- 
-    })
+                        $('.next-page').on('click', e => {
+                            shift += 10
+                            getFolder(currentFolder, shift)
+                        })
 
-})
+                        // console.log(arr, mail)
+                    }
+
+
+                });
+            }
+        })
+
+
     </script>
 </body>
 

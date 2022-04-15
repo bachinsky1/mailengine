@@ -9,7 +9,8 @@ using System.Net.Http;
 using System.Net;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace MailEngine.Controllers
 {
@@ -86,7 +87,6 @@ namespace MailEngine.Controllers
             }
             else
             {
-                string apiKey = "Your send gri api key";
                 SendGridClient client = new SendGridClient(UserSettings.SendGridKey);
                 SendGridMessage msg = MailHelper.CreateSingleEmail(new EmailAddress(UserSettings.ImapUser), new EmailAddress(to), subject, body, body);
                 Response response = await client.SendEmailAsync(msg);
@@ -141,6 +141,52 @@ namespace MailEngine.Controllers
                 return null;
             }
         }
+
+        [HttpGet("search/{folder}/{search}/{unseen}")]
+        public IEnumerable<Message> Search(string folder, string search, bool unseen = false)
+        {
+            Debug.WriteLine("1", folder, search, unseen.ToString());
+            UserImap userImap = new();
+            Imap imap = userImap.Connect();
+            List<string> mails = new();
+            int counter = 0;
+            List<Message> messages = new List<Message>();
+
+            foreach (FolderInfo folderInfo in imap.GetFolders())
+            {
+                if (folderInfo.CanSelect)
+                {
+                    if (folder == folderInfo.ShortName)
+                    {
+                        imap.Select(folderInfo);
+                        SimpleImapQuery query = new SimpleImapQuery();
+                        query.Subject = search;
+                        query.Unseen = unseen;
+                        List<long> uids = imap.Search(query);
+                        uids.Sort();
+                        uids.Reverse();
+
+                        foreach (long uid in uids)
+                        {
+                            byte[] eml = imap.GetMessageByUID(uid);
+                            IMail email = new MailBuilder().CreateFromEml(eml);
+                            List<string> attachments = new();
+
+                            messages.Add(Message.PrepareMessage(email, uid));
+
+                            if (counter++ > 8) break;
+                        }
+                    }
+                }
+
+            }
+
+            userImap.CLose();
+            return messages.ToArray();
+        }
+
+
+
 
     }
 }

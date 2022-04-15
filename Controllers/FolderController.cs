@@ -64,8 +64,7 @@ namespace MailEngine.Controllers
 
                         foreach (long uid in uids)
                         {
-                           
-                            var info = imap.GetMessageInfoByUID(uid); 
+                            MessageInfo info = imap.GetMessageInfoByUID(uid); 
                             List<string> attachments = new();
                             messages.Add(info.UID.ToString());
                             Debug.WriteLine(info.UID.ToString());
@@ -88,7 +87,7 @@ namespace MailEngine.Controllers
             {
                 shift = 0;
             }
-            Debug.WriteLine(folder);
+            Debug.WriteLine("1", folder);
             UserImap userImap = new();
             Imap imap = userImap.Connect();
             int counter = 0;
@@ -108,8 +107,7 @@ namespace MailEngine.Controllers
 
                         foreach (long uid in uids)
                         {
-                            var eml = imap.GetMessageByUID(uid);
-                            //var info = imap.GetMessageInfoByUID(uid);
+                            var eml = imap.GetMessageByUID(uid); 
                             IMail email = new MailBuilder().CreateFromEml(eml);
                             List<string> attachments = new();
                             messages.Add(Message.PrepareMessage(email, uid));
@@ -125,51 +123,6 @@ namespace MailEngine.Controllers
             return messages.ToArray();
         }
 
-        [HttpGet("{folder}/{search}/{unseen}")]
-        public IEnumerable<Message> Get(string folder, string search = "", bool unseen = false)
-        {
-            Debug.WriteLine(folder);
-            UserImap userImap = new();
-            Imap imap = userImap.Connect();
-            List<string> mails = new();
-            int counter = 0;
-            List<Message> messages = new List<Message>();
-
-            foreach (FolderInfo folderInfo in imap.GetFolders())
-            {
-                if (folderInfo.CanSelect)
-                {
-                    if (folder == folderInfo.ShortName)
-                    {
-                        imap.Select(folderInfo);
-                        SimpleImapQuery query = new SimpleImapQuery();
-                        query.Subject = search;
-                        query.Unseen = unseen;
-                        List<long> uids = imap.Search(query);
-                        uids.Sort();
-                        uids.Reverse();
-                        
-                        foreach (long uid in uids)
-                        {
-                            byte[] eml = imap.GetMessageByUID(uid);
-                            MessageInfo info = imap.GetMessageInfoByUID(uid);
-                            IMail email = new MailBuilder().CreateFromEml(eml);
-                            List<string> attachments = new();
-
-                            messages.Add(Message.PrepareMessage(email, uid));
-
-                            if (counter++ > 8) break;
-                        }
-                    }
-                }
-
-            }
-
-            userImap.CLose();
-            return messages.ToArray();
-        }
-
-        
         
 
 
