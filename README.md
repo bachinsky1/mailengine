@@ -4,7 +4,7 @@
 3. Set mail credentionals in UserSettings.cs file
 4. Set SendGrid key in UserSettings.cs file
 5. Run application in IIS Express or in Docker
-6. Look at the port https://localhost:[PORT]/swagger/index.html and change port in index.html in 400 line to port from your started local server
+6. Look at the port https://localhost:[PORT]/swagger/index.html and change port in index.html in 408 line to port from your started local server
 8. Open index.html and use mail client for directly send mail, or send mail via SendGrid
 9. By analogy, you can connect any other mail sender using the SendGrid model
 
