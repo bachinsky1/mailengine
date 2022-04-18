@@ -9,7 +9,7 @@
 9. By analogy, you can connect any other mail sender using the SendGrid model
 
 ## Remarks
-If you want to use your Gmail, firstly need to create virtual device and user password from it https://security.google.com/settings/security/apppasswords as an IMAP/SMTP password.
+If you want to use your Gmail, firstly need to create virtual device and use password from it https://security.google.com/settings/security/apppasswords as an IMAP/SMTP password.
 Another mail servers, like as outlook.com, uses a regular email password for connection
 
 It should been ran as a remote service in Google cloud or as a local service, integrated to Katarina Manager, as a separated application. Or as a Windows Service.
